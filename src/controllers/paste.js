@@ -2,34 +2,46 @@ import Paste from "../models/paste.js";
 import hljs from 'highlight.js'
 import { escape } from "html-escaper";
 
+// Kaikkien pastejen tarkastelusivu
 const getAllPastes = async(req, res, next) => {
+    // Haetaan koko tietokannan sisältö arrayhyn ({}) komennolla
+    // Varmistetaan samalla että tietokannasta löytyy mitään
+    // Jos yhteyttä ei löydy, heitetään virhekoodia 404
     try {
         const pasteItems = await Paste.find({});
         if (!pasteItems) return res.status(404).send();
 
+        // Jos homma toimi, renderöidään kaikkien pastejen tarkastelusivu
         res.render('paste/pasteViewAll', { pasteItems })
     } catch (e) {
         next(e);
     }
 }
 
+// Yksittäisen pasten tarkastelu id:n kautta
 const getPaste = async(req, res, next) => {
     if (!req.params.id) {
+        // Varmistetaan että yhteys toimii, jos serveriltä ei tule vastausta
+        // heitetään error 400 Bad gateway
         res.status(400).send();
         return
     }
 
     try {
+        // Haetaan pasten tiedot ja varmistetaan samalla, että paste ylipäänsä löytyy
+        // Jos haetulla id:llä ei löydy vastaavuutta, heitetään error 404
+        // Page you're trying to reach can not be found
         const paste = await Paste.findById(req.params.id);
         if (!paste) return res.status(404).send();
 
+        // Jos kaikki on kunnossa ja yhteys pelaa, renderöidään yksittäisen pasten tarkastelusivu
         res.render('paste/pasteViewSingle', paste)
     } catch (e) {
         next(e);
     }
 }
 
-
+// Renderöidään uuden pasten luonti-ikkuna
 const getCreateNewPaste = (req, res, next) => {
     res.render('paste/pasteViewCreate')
 }
@@ -77,11 +89,18 @@ const postCreateNewPaste = async(req, res, next) => {
     }
 }
 
+// Olemassa olevan pasten poistaminen
+// Asynkroninen poisto edellyttää try cathcia
 const deletePaste = async(req, res, next) => {
+    // Jos tietokanta ei anna vastausta, toiminta epäonnistui ja annetaan error 400 Bad Gateway
     if (!req.params.id) return res.status(400).send();
     try {
+        // Haetaan poistettavan pasten tiedot ja varmistetaan, että se on vielä olemassa
+        // Jos pastea ei enää löydy, heitetään error 404 Page you're trying to reach can not be found
         const paste = await Paste.findById(req.params.id);
         if (!paste) return res.status(404).send();
+
+        // Jos yhteys pelaa ja paste löytyy, poistetaan paste ja kuitataan onnistuminen
         await paste.delete();
 
         next("Poisto onnistui")
