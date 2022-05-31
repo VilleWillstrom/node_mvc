@@ -1,21 +1,17 @@
 import mongoose from "mongoose";
 
-const pasteSchema = new mongoose.Schema({
+const noteSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
         trim: true
     },
-    description: {
+    content: {
         type: String,
         required: true,
         trim: true
     },
-    body: {
-        type: String,
-        required: true,
-        trim: true
-    },
+   
 }, { timestamps: true });
 
 /*
@@ -26,4 +22,4 @@ const pasteSchema = new mongoose.Schema({
 }
 */
 
-export default mongoose.model("Paste", pasteSchema);
+export default mongoose.model("Note", noteSchema);
