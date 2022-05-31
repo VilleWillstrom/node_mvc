@@ -15,6 +15,6 @@ router.get("/notes", [NoteController.getAllNotes, catchError]);
 router.get("/note/:id", [NoteController.getNote, catchError]);
 router.get("/note", [NoteController.getCreateNewNote]);//ei tarvitse catchErroria, koska ei ole asynkroninen operaatio ja oletuksena onnistuu aina
 router.post("/note", [NoteController.postCreateNewNote, catchError]);
-router.get("/delete_note/:id", []);
+router.get("/delete_note/:id", [NoteController.deleteNote, catchError]);
 
 export default router;

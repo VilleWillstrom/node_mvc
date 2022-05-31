@@ -77,7 +77,7 @@ const postCreateNewNote = async(req, res, next) => {
     }
 }
 
-// Koodia tähän
+// Kommenttia tähän
 
 const deleteNote = async(req, res, next) => {
     if (!req.params.id) return res.status(400).send();
@@ -94,6 +94,7 @@ const deleteNote = async(req, res, next) => {
 }
 export default {
     getAllNotes,
+    deleteNote,
     getNote,
     getCreateNewNote,
     postCreateNewNote
